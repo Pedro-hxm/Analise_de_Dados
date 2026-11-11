@@ -1,0 +1,17 @@
+IBGE — Censo 2022 e tabelas de população e domicílios
+https://www.ibge.gov.br/estatisticas/sociais/populacao/22827-censo-demografico-2022.html
+https://sidra.ibge.gov.br/tabela/4711
+Selecionar domicílios particulares permanentes ocupados e conferir as categorias e unidades da tabela antes de exportar. Filtrar os 12 códigos IBGE.
+
+Receita Federal — cadastro CNPJ
+https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos/cadastros
+Usar estabelecimentos ativos, UF e município e CNAE principal selecionado. O código de município da Receita precisa de correspondência para o código IBGE. Não juntar códigos diretamente. Contar estabelecimentos por CNPJ completo. Definir previamente se CNAEs secundários entram, com deduplicação.
+
+ANEEL — registros de geração distribuída
+https://dadosabertos.aneel.gov.br/dataset/relacao-de-empreendimentos-de-geracao-distribuida
+Download usado no pacote original
+https://dadosabertos.aneel.gov.br/dataset/5e0fafd2-21b9-4d5b-b622-40438d40aba2/resource/b1bd71e7-d0ad-4214-9053-cbd58e9564a7/download/empreendimento-geracao-distribuida.zip
+
+INPE
+https://labren.ccst.inpe.br/atlas_2017.html
+https://labren.ccst.inpe.br/projetos/atlas_2017/atlas_solar_2017_metadados.pdf

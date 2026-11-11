@@ -1,0 +1,7 @@
+BASE DE DADOS — ATIVA SOLAR | 12 MUNICÍPIOS DE PERNAMBUCO E PARAÍBA
+
+Cobertura exclusiva: PE — Abreu e Lima, Goiana, Igarassu, Itamaracá, Itambé e Itapissuma; PB — Alhandra, Caaporã, Conde, João Pessoa, Pedras de Fogo e Pitimbu. No Atlas/IBGE, Itamaracá aparece como Ilha de Itamaracá.
+
+O CSV base contém uma linha por município e combina irradiação INPE/LABREN, geração distribuída fotovoltaica ANEEL e população IBGE. Veja o DOCX e fontes_e_links.csv para método, limitações e URLs.
+
+A irradiação representa a sede municipal, não todo o território nem um telhado/terreno específico. Unidade Wh/m².dia (dividir por 1.000 para kWh/m².dia). A base do Atlas 2017 tem estimativas baseadas em imagens de 1999–2015 e restrição para reprodução comercial sem autorização do CCST/INPE. Os CSVs usam UTF-8 com BOM e ponto e vírgula.

@@ -1,0 +1,26 @@
+BASES ATIVA SOLAR — GOIANA E REGIÃO
+
+Situação da complementação
+O pacote original foi preservado integralmente em 01_bases_recebidas.
+A base integrada mantém os 12 municípios e acrescenta campos para domicílios, empresas e atendimento. Estes campos permanecem vazios porque a coleta adicional não foi concluída. Vazio significa não coletado, nunca zero.
+As consultas IBGE e ANEEL falharam por indisponibilidade de acesso nesta execução. Não foram acrescentados valores estimados ou inventados.
+
+Organização
+01_bases_recebidas — arquivos originais e metodologia original.
+02_base_integrada — base municipal com estrutura preparada para complementação.
+03_complementacao — cadastro de atendimento e rotina de extração de histórico ANEEL a partir do arquivo oficial.
+04_documentacao — avaliação, fontes e dicionário dos campos adicionais.
+
+Pendências para atender o DEILAS
+1. Obter domicílios particulares permanentes ocupados por município no Censo 2022.
+2. Confirmar os CNAEs com o cliente e obter os estabelecimentos ativos correspondentes na Receita Federal.
+3. Baixar os registros ANEEL e gerar conexões por ano com a rotina fornecida.
+4. Confirmar os municípios atendidos com o cliente.
+5. Conferir o significado do plano inclinado antes de tratar GTI10 como inclinação fixa de 10 graus. A URL original usa TILTED_LATITUDE.
+
+Power BI
+Importar consolidado com UTF-8, delimitador ponto e vírgula e localidade Português Brasil. Nos quatro recortes originais do INPE, o separador decimal é ponto. Tratar código IBGE como texto. Separar residencial e empresarial nos indicadores. As médias mensais do Atlas descrevem sazonalidade histórica, não evolução de anos recentes.
+As UCs beneficiadas não são instalações distintas nem pessoas únicas. Valores por mil habitantes não são percentuais de domicílios com painéis. O agregado ANEEL preservado não permite separar classes residencial e empresarial.
+
+Validação
+12 registros municipais, 12 códigos únicos, nenhum campo vazio no consolidado original. Razões por mil habitantes recalculadas e consistentes com arredondamento de duas casas. Não foi feita conciliação integral dos valores originais com todas as fontes externas.
