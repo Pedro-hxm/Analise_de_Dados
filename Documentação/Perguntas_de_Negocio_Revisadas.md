@@ -76,7 +76,7 @@ O código IBGE de sete dígitos é a chave para integrar as bases.
 - Comparações mensais entre municípios e leitura da sazonalidade dentro da série histórica.
 - Amplitude ou diferenças observadas, sempre mantendo a unidade original.
 
-**Status atual:** os dados anuais e mensais estão no repositório. No Colab foi feita uma comparação exploratória preliminar do GHI anual. A comparação mensal entre as sedes ainda precisa ser concluída e documentada. O notebook `Analise_Exploratoria_Ativa_Solar.ipynb` foi criado e executado no Colab, mas não foi transferido para o GitHub; seus resultados não estão reproduzidos neste repositório.
+**Status atual:** os dados anuais e mensais estão no repositório. O notebook versionado `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb` contém comparações exploratórias anual e mensal entre as sedes municipais, com execução e saídas salvas. A dashboard MVP também apresenta essas comparações. A síntese dos resultados no relatório final continua pendente. A cópia do notebook aberta no link do Colab não foi comparada nesta revisão com a versão do GitHub.
 
 **Limitações e cuidados:** o GHI do INPE é uma referência histórica para as coordenadas das sedes municipais, com resolução aproximada de 0,1° (cerca de 10 km); não é medição de telhados, imóveis ou de todo o território municipal. A série 1999–2015 não deve ser apresentada como condição atual ou previsão. As médias mensais indicam sazonalidade histórica, não evolução entre anos. O projeto também possui campos identificados como GTI10; confira os metadados antes de atribuir um ângulo fixo ao rótulo.
 
@@ -96,7 +96,7 @@ O código IBGE de sete dígitos é a chave para integrar as bases.
 - Como contexto descritivo, instalações e potência por mil habitantes, já recalculadas na base tratada com a estimativa populacional de 2026.
 - Se a série com datas de conexão for obtida, contagem e potência por município e ano, com regras de inclusão documentadas.
 
-**Status atual:** o arquivo da ANEEL está disponível como fotografia municipal baixada em 10/11/2026. No Colab foram feitas comparações exploratórias preliminares do número de instalações e da potência, além dos indicadores por mil habitantes. As análises ainda não estão reproduzidas neste repositório. A série histórica anual não está disponível; depende da obtenção de registros com datas de conexão.
+**Status atual:** o arquivo da ANEEL está disponível como fotografia municipal baixada em 10/11/2026. O notebook exploratório versionado contém comparações preliminares do número de instalações e da potência, além dos indicadores por mil habitantes, com saídas salvas; a dashboard MVP apresenta essas métricas. A série histórica anual não está disponível; depende da obtenção de registros com datas de conexão.
 
 **Limitações e cuidados:** os dados descrevem geração distribuída registrada nos municípios; não identificam clientes, vendas ou faturamento da Ativa Solar. Unidades consumidoras que recebem créditos não são equivalentes a instalações ou clientes únicos. A fotografia de 10/11/2026 não demonstra evolução temporal. Baixa adoção solar, isoladamente, não prova oportunidade comercial, demanda não atendida ou capacidade livre da rede.
 
@@ -127,7 +127,7 @@ O código IBGE de sete dígitos é a chave para integrar as bases.
 - Definir com a empresa os CNAEs e coletar os estabelecimentos ativos, documentando data de referência, chave municipal e deduplicação.
 - Confirmar quais municípios do recorte são atendidos pela Ativa Solar.
 - Obter registros da ANEEL com datas de conexão para avaliar a evolução anual, caso estejam disponíveis.
-- Concluir e documentar a comparação mensal do GHI.
+- Consolidar e interpretar as comparações anual e mensal do GHI no relatório final, mantendo a série 1999–2015 como referência histórica.
 - Preservar ausências como valores pendentes, sem convertê-las em zero; não usar população como substituta de domicílios.
 - Descrever os dados da ANEEL como geração distribuída registrada nos municípios, nunca como clientes da Ativa Solar, vendas ou faturamento.
 - Tratar o GHI do INPE como referência histórica das sedes municipais, não como medição de telhados específicos.
@@ -135,6 +135,10 @@ O código IBGE de sete dígitos é a chave para integrar as bases.
 
 ## Estado dos artefatos
 
-O repositório contém o notebook de limpeza `Notebooks/Limpeza_Inicial_DEILAS_Ativa_Solar.ipynb`, a base integrada limpa, seu dicionário e o relatório de qualidade. O notebook exploratório separado `Analise_Exploratoria_Ativa_Solar.ipynb` foi criado e executado no Colab, mas ainda não foi transferido ao GitHub. Assim, os cálculos exploratórios mencionados acima não podem ser reproduzidos a partir do conteúdo atualmente versionado.
+O repositório contém os notebooks separados de limpeza e análise exploratória, além da base integrada limpa, do dicionário e do relatório de qualidade. O notebook exploratório versionado tem 18 células; suas nove células de código têm contagens de execução e saídas salvas. Os metadados e as saídas registram o kernel local `.venv (3.12.4)` e um caminho do projeto em `E:\Analise de dados\Analise_de_Dados`; isso comprova uma execução local registrada, mas não confirma que a cópia acessada pelo link do Colab seja idêntica.
+
+O notebook de limpeza versionado tem 29 células, incluindo 13 células de código, sem contagens de execução ou saídas salvas. Nesta revisão, o código das 13 células foi executado sequencialmente em uma cópia temporária do projeto: a execução gerou a base de 12 municípios, o dicionário com 44 campos e o relatório de qualidade, preservando como ausentes os campos pendentes. Os arquivos publicados no repositório não foram sobrescritos.
+
+A dashboard MVP está em `Dashboard/app.py` e apresenta GHI anual e mensal e indicadores municipais da ANEEL. Ela não produz recomendação ou ranking comercial final enquanto público residencial, público empresarial e atendimento estiverem pendentes.
 
 Este documento registra as perguntas e necessidades analíticas; não substitui a metodologia da base, os dicionários nem os metadados das fontes.

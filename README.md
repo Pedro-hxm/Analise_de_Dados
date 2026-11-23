@@ -75,9 +75,18 @@ Use os links abaixo para abrir cada notebook no Google Colab.
 
 **Ainda pendente:** coletar e conferir os domicílios ocupados do Censo 2022; definir os CNAEs com a empresa e obter as contagens de estabelecimentos ativos; confirmar a área atendida; e obter registros ANEEL com datas de conexão para eventual evolução anual. Sem os dados de público e atendimento, não é possível concluir as comparações residenciais e empresariais nem formular a lista preliminar da pergunta 5. O projeto também não definiu ponderação nem município vencedor.
 
-## Dashboard planejada
+## Dashboard
 
-A dashboard é uma etapa **planejada**, ainda não implementada no repositório. A proposta é desenvolvê-la em **Python**, com **pandas**, **Plotly** e **Streamlit**, para comparar os municípios por meio de filtros, mapas e gráficos de públicos, GHI e indicadores da ANEEL. As análises dos públicos e a lista preliminar dependem da confirmação de atendimento e da coleta dos dados pendentes. Uma evolução anual da ANEEL só poderá ser incluída se forem obtidos registros com datas de conexão.
+O MVP da dashboard está implementado em `Dashboard/app.py`, com **Python**, **pandas**, **Plotly** e **Streamlit**. Ele carrega a base integrada limpa e permite filtrar por estado e município para comparar GHI anual e mensal, instalações e potência fotovoltaica registradas pela ANEEL, razões por mil habitantes e população estimada como contexto. A dashboard também apresenta os públicos residencial e empresarial e a confirmação de atendimento como pendentes enquanto esses campos não forem preenchidos; valores ausentes não são convertidos em zero.
+
+Para executar a aplicação a partir da raiz do repositório:
+
+```powershell
+python -m pip install -r Dashboard/requirements.txt
+python -m streamlit run Dashboard/app.py
+```
+
+A dashboard é exploratória e não gera prioridade comercial final. Os dados da ANEEL são geração distribuída registrada nos municípios. Uma evolução anual da ANEEL depende de registros com datas de conexão; a análise dos públicos e a validação comercial dependem da confirmação de atendimento e da coleta dos dados pendentes.
 
 ## Organização do repositório
 
@@ -89,6 +98,7 @@ A dashboard é uma etapa **planejada**, ainda não implementada no repositório.
 | `Base de dados/04_documentacao/` | Fontes de complementação e dicionário dos campos pendentes. |
 | `Base de dados/05_bases_tratadas/` | Base integrada limpa, dicionário e relatório de qualidade. |
 | `Notebooks/` | Notebooks separados de limpeza, validação, integração e exportação e de análise exploratória. |
+| `Dashboard/` | Aplicação exploratória em Streamlit e dependências necessárias para executá-la. |
 | `Documentação/` | Entregas acadêmicas, PDF da primeira entrega, DOCX de limpeza e análise inicial e [perguntas de negócio revisadas](Documentação/Perguntas_de_Negocio_Revisadas.md). |
 
 Os CSVs tabulares usam UTF-8 com BOM e ponto e vírgula como separador. As bases integradas e tratadas usam vírgula decimal; os recortes originais do INPE usam ponto decimal. Trate o código IBGE como texto e preserve campos vazios como ausências.
