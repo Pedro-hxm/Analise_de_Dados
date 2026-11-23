@@ -125,15 +125,68 @@ except (FileNotFoundError, ValueError, OSError) as erro:
     st.error(f"Não foi possível carregar a base tratada. {erro}")
     st.stop()
 
-st.sidebar.header("Filtros")
 ufs_disponiveis = sorted(df["uf"].dropna().unique().tolist())
-ufs = st.sidebar.multiselect("Estado", ufs_disponiveis, default=ufs_disponiveis)
-opcoes_municipios = sorted(
-    df.loc[df["uf"].isin(ufs), "municipio"].dropna().unique().tolist()
-)
-municipios = st.sidebar.multiselect(
-    "Município", opcoes_municipios, default=opcoes_municipios
-)
+
+if "filtro_ufs" not in st.session_state:
+    st.session_state["filtro_ufs"] = ufs_disponiveis
+
+st.subheader("Filtros do recorte")
+with st.expander("Filtrar indicadores", expanded=True):
+    filtros = st.columns(
+        [1, 2, 2],
+        gap="small",
+        vertical_alignment="bottom",
+        wrap=True,
+    )
+    with filtros[0]:
+        ufs = st.multiselect(
+            "Estado",
+            options=ufs_disponiveis,
+            key="filtro_ufs",
+        )
+
+    opcoes_municipios = sorted(
+        df.loc[df["uf"].isin(ufs), "municipio"].dropna().unique().tolist()
+    )
+    municipios_atuais = st.session_state.get("filtro_municipios")
+    if municipios_atuais is None:
+        st.session_state["filtro_municipios"] = opcoes_municipios
+    else:
+        st.session_state["filtro_municipios"] = [
+            municipio
+            for municipio in municipios_atuais
+            if municipio in opcoes_municipios
+        ]
+
+    with filtros[1]:
+        municipios = st.multiselect(
+            "Município",
+            options=opcoes_municipios,
+            key="filtro_municipios",
+        )
+
+    opcoes_indicador = [
+        "Selecione um indicador",
+        "GHI anual (Wh/m².dia)",
+        "Instalações fotovoltaicas ANEEL",
+        "Potência registrada pela ANEEL (kW)",
+        "Instalações por 1.000 habitantes",
+        "Potência por 1.000 habitantes",
+    ]
+    if st.session_state.get("indicador_mapa") not in opcoes_indicador:
+        st.session_state["indicador_mapa"] = opcoes_indicador[0]
+    with filtros[2]:
+        indicador_mapa = st.selectbox(
+            "Indicador",
+            options=opcoes_indicador,
+            key="indicador_mapa",
+        )
+
+    if indicador_mapa == opcoes_indicador[0]:
+        st.caption("O indicador será usado no mapa quando ele for adicionado na etapa seguinte.")
+    else:
+        st.caption(f"Indicador selecionado para o mapa: {indicador_mapa}.")
+
 selecionados = df.loc[df["uf"].isin(ufs) & df["municipio"].isin(municipios)].copy()
 
 if selecionados.empty:
