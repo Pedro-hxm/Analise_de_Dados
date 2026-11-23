@@ -114,9 +114,9 @@ def figura_barra(dados: pd.DataFrame, coluna: str, titulo: str, eixo: str, casas
         yaxis_title=eixo,
         legend_title_text="Estado",
         separators=",.",
-        margin={"l": 12, "r": 12, "t": 55, "b": 12},
+        margin={"l": 12, "r": 12, "t": 55, "b": 48},
     )
-    figura.update_xaxes(tickangle=-25)
+    figura.update_xaxes(tickangle=-35, automargin=True, tickfont={"size": 10})
     return figura
 
 
@@ -196,7 +196,7 @@ if selecionados.empty:
     st.stop()
 
 st.subheader("Visão geral do recorte selecionado")
-kpis = st.columns(4)
+kpis = st.columns(4, gap="small", wrap=True)
 kpis[0].metric("Municípios", formatar_numero(len(selecionados)))
 kpis[1].metric(
     "População estimada (2026)",
@@ -277,7 +277,7 @@ else:
     total_atendimento = (
         f"{int(status_atendimento.sum())}/{len(selecionados)} confirmados"
     )
-publicos = st.columns(3)
+publicos = st.columns(3, gap="small", wrap=True)
 publicos[0].metric(
     "Domicílios ocupados — Censo 2022",
     publico_atendido(selecionados, "domicilios_ocupados_2022"),
@@ -375,7 +375,7 @@ else:
         width="stretch",
     )
 
-razoes = st.columns(2)
+razoes = st.columns(2, gap="small", wrap=True)
 with razoes[0]:
     st.plotly_chart(
         figura_barra(
@@ -385,7 +385,7 @@ with razoes[0]:
             "Instalações por 1.000 habitantes",
             casas=2,
         ),
-        use_container_width=True,
+        width="stretch",
     )
 with razoes[1]:
     st.plotly_chart(
@@ -396,7 +396,7 @@ with razoes[1]:
             "kW por 1.000 habitantes",
             casas=2,
         ),
-        use_container_width=True,
+        width="stretch",
     )
 
 fig_associacao = px.scatter(
@@ -417,7 +417,7 @@ fig_associacao = px.scatter(
 fig_associacao.update_layout(
     separators=",.", margin={"l": 12, "r": 12, "t": 55, "b": 12}
 )
-st.plotly_chart(fig_associacao, use_container_width=True)
+st.plotly_chart(fig_associacao, width="stretch")
 st.caption(
     "Associação descritiva entre municípios; pode refletir diferenças de escala e não indica causalidade. "
     "Os indicadores por mil habitantes são razões, não percentuais de domicílios com energia solar."
@@ -454,7 +454,7 @@ for coluna in [
     "Atendimento confirmado",
 ]:
     tabela[coluna] = tabela[coluna].where(tabela[coluna].notna(), "Pendente")
-st.dataframe(tabela, hide_index=True, use_container_width=True)
+st.dataframe(tabela, hide_index=True, width="stretch")
 
 st.subheader("Como interpretar")
 st.markdown(
