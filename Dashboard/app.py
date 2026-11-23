@@ -293,8 +293,15 @@ st.warning(
 )
 
 st.subheader("Irradiação global horizontal — GHI")
-col_ghi_anual, col_ghi_mensal = st.columns(2)
-with col_ghi_anual:
+visao_ghi = st.segmented_control(
+    "Visualização do GHI",
+    options=["Anual", "Mensal"],
+    default="Anual",
+    key="visao_ghi",
+    label_visibility="collapsed",
+    width="content",
+)
+if visao_ghi == "Anual":
     st.plotly_chart(
         figura_barra(
             selecionados,
@@ -302,10 +309,9 @@ with col_ghi_anual:
             "GHI médio diário anual por sede municipal",
             "Wh/m².dia",
         ),
-        use_container_width=True,
+        width="stretch",
     )
-
-with col_ghi_mensal:
+else:
     mensal = selecionados[["municipio", "uf", *COLUNAS_MES]].melt(
         id_vars=["municipio", "uf"],
         var_name="mes",
@@ -330,7 +336,7 @@ with col_ghi_mensal:
         legend_title_text="Município / estado",
         margin={"l": 12, "r": 12, "t": 55, "b": 12},
     )
-    st.plotly_chart(fig_mensal, use_container_width=True)
+    st.plotly_chart(fig_mensal, width="stretch")
 
 st.caption(
     "GHI do Atlas Brasileiro de Energia Solar (INPE/LABREN, 2ª edição, 2017): "
@@ -339,8 +345,15 @@ st.caption(
 )
 
 st.subheader("Geração distribuída fotovoltaica registrada pela ANEEL")
-col_instalacoes, col_potencia = st.columns(2)
-with col_instalacoes:
+visao_aneel = st.segmented_control(
+    "Indicador ANEEL",
+    options=["Instalações", "Potência"],
+    default="Instalações",
+    key="visao_aneel",
+    label_visibility="collapsed",
+    width="content",
+)
+if visao_aneel == "Instalações":
     st.plotly_chart(
         figura_barra(
             selecionados,
@@ -348,9 +361,9 @@ with col_instalacoes:
             "Instalações fotovoltaicas registradas",
             "Instalações",
         ),
-        use_container_width=True,
+        width="stretch",
     )
-with col_potencia:
+else:
     st.plotly_chart(
         figura_barra(
             selecionados,
@@ -359,7 +372,7 @@ with col_potencia:
             "Potência (kW)",
             casas=2,
         ),
-        use_container_width=True,
+        width="stretch",
     )
 
 razoes = st.columns(2)
