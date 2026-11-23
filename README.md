@@ -60,11 +60,20 @@ As fontes e os links consultados estão em `Base de dados/01_bases_recebidas/fon
 
 **Bases e qualidade disponíveis:** as bases de INPE, ANEEL e IBGE foram integradas pelo código IBGE para os 12 municípios. A base tratada, o dicionário e o relatório de qualidade (`Base de dados/05_bases_tratadas/`) registram conferências de cobertura, unicidade, junções, ausências e tipos. O relatório, executado em **20/11/2026**, documenta também o recálculo dos indicadores de instalações e potência por mil habitantes, sem divergências após arredondamento a duas casas. Os campos complementares de domicílios, estabelecimentos por CNAE e atendimento permanecem vazios para todos os municípios.
 
-**Notebook no repositório:** o GitHub contém `Notebooks/Limpeza_Inicial_DEILAS_Ativa_Solar.ipynb`, voltado à limpeza, validação, integração e exportação. O arquivo versionado registra as etapas de validação e integração; sua seção final de análise exploratória tem apenas os títulos iniciais de uma comparação de GHI anual, sem células de resultados executadas no notebook do repositório.
+**Notebook de limpeza:** `Notebooks/Limpeza_Inicial_DEILAS_Ativa_Solar.ipynb` é dedicado à limpeza, validação e integração das bases e à exportação da base tratada, do dicionário e do relatório de qualidade.
 
-**Notebook exploratório no Colab:** `Analise_Exploratoria_Ativa_Solar.ipynb` foi criado e executado no Google Colab, mas ainda não foi transferido para o GitHub. A análise está **parcial**, não concluída. No Colab foram feitas comparações preliminares de GHI anual, número de instalações fotovoltaicas, potência instalada, instalações por mil habitantes, potência por mil habitantes e associação descritiva entre população e instalações. A associação é apenas descritiva, influenciada pela escala de João Pessoa, e não demonstra causalidade nem demanda da Ativa Solar. Esses resultados não estão reproduzidos no repositório.
+**Notebook exploratório:** `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb` é separado da limpeza. A análise permanece **parcial**, não concluída. Já inclui comparações de GHI anual e mensal entre os municípios, distribuição atual de instalações e potência da ANEEL, razões por mil habitantes e associação descritiva entre população e instalações. Essas análises são exploratórias: não demonstram causalidade, demanda ou oportunidade comercial da Ativa Solar.
 
-**Ainda pendente:** comparar o GHI mensal entre as sedes municipais; coletar e conferir os domicílios ocupados do Censo 2022; definir os CNAEs com a empresa e obter as contagens de estabelecimentos ativos; confirmar a área atendida; e obter registros ANEEL com datas de conexão para eventual evolução anual. Sem os dados de público e atendimento, não é possível concluir as comparações residenciais e empresariais nem formular a lista preliminar da pergunta 5. O projeto também não definiu ponderação nem município vencedor.
+### Links dos notebooks no Google Colab
+
+Use os links abaixo para abrir cada notebook no Google Colab.
+
+| Notebook | Link do Colab |
+|---|---|
+| [Limpeza e integração](Notebooks/Limpeza_Inicial_DEILAS_Ativa_Solar.ipynb) | [Abrir no Colab](https://colab.research.google.com/drive/1ZJNjEsiSUUG9xCWeeX6IvFgJl_RWmPI7?usp=sharing) |
+| [Análise exploratória](Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb) | [Abrir no Colab](https://colab.research.google.com/drive/1RvH-tCXihHmVWonrlx2fSAdK0dh8fv9s#scrollTo=load-treated-base) |
+
+**Ainda pendente:** coletar e conferir os domicílios ocupados do Censo 2022; definir os CNAEs com a empresa e obter as contagens de estabelecimentos ativos; confirmar a área atendida; e obter registros ANEEL com datas de conexão para eventual evolução anual. Sem os dados de público e atendimento, não é possível concluir as comparações residenciais e empresariais nem formular a lista preliminar da pergunta 5. O projeto também não definiu ponderação nem município vencedor.
 
 ## Dashboard planejada
 
@@ -79,7 +88,7 @@ A dashboard é uma etapa **planejada**, ainda não implementada no repositório.
 | `Base de dados/03_complementacao/` | Cadastro de atendimento e público-alvo e rotina para processar registros históricos da ANEEL quando obtidos. |
 | `Base de dados/04_documentacao/` | Fontes de complementação e dicionário dos campos pendentes. |
 | `Base de dados/05_bases_tratadas/` | Base integrada limpa, dicionário e relatório de qualidade. |
-| `Notebooks/` | Notebook de limpeza, validação, integração e exportação versionado no repositório. |
+| `Notebooks/` | Notebooks separados de limpeza, validação, integração e exportação e de análise exploratória. |
 | `Documentação/` | Entregas acadêmicas, PDF da primeira entrega, DOCX de limpeza e análise inicial e [perguntas de negócio revisadas](Documentação/Perguntas_de_Negocio_Revisadas.md). |
 
 Os CSVs tabulares usam UTF-8 com BOM e ponto e vírgula como separador. As bases integradas e tratadas usam vírgula decimal; os recortes originais do INPE usam ponto decimal. Trate o código IBGE como texto e preserve campos vazios como ausências.
