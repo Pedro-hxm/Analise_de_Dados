@@ -111,12 +111,13 @@ def figura_barra(dados: pd.DataFrame, coluna: str, titulo: str, eixo: str, casas
     return figura
 
 
-st.title("Inteligência Comercial Geográfica — Ativa Solar")
-st.caption("Triagem exploratória de 12 municípios de Pernambuco e Paraíba")
-st.info(
-    "Esta dashboard compara indicadores públicos municipais. Ela não comprova demanda, "
-    "não identifica clientes da Ativa Solar e não estima vendas ou faturamento."
-)
+with st.container():
+    st.title("Inteligência Comercial Geográfica — Ativa Solar")
+    st.caption("Triagem exploratória de 12 municípios de Pernambuco e Paraíba")
+    st.info(
+        "Esta dashboard compara indicadores públicos municipais. Ela não comprova demanda, "
+        "não identifica clientes da Ativa Solar e não estima vendas ou faturamento."
+    )
 
 try:
     df = carregar_base()
@@ -157,6 +158,14 @@ st.caption(
     "A população é apresentada como contexto demográfico e não substitui domicílios ocupados. "
     "Os totais da ANEEL descrevem geração distribuída registrada nos municípios."
 )
+
+with st.container(height=300, border=True):
+    st.subheader("Mapa dos municípios")
+    st.caption("Área reservada para o mapa na próxima etapa.")
+    st.info(
+        "A base contém coordenadas das sedes municipais para localizar pontos. "
+        "Elas não representam limites municipais; um mapa por áreas dependerá de uma fonte geográfica apropriada."
+    )
 
 st.subheader("Públicos e área atendida")
 status_atendimento = selecionados["atendimento_confirmado"].map(normalizar_atendimento)
