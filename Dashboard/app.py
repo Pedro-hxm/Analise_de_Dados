@@ -22,11 +22,20 @@ COLUNAS_PUBLICO_PENDENTE = [
 ]
 COLUNAS_OBRIGATORIAS = [
     "uf", "codigo_ibge", "municipio", "populacao_estimada_2026",
+    "ghi_latitude", "ghi_longitude",
     "ghi_annual_Wh_m2_day", *COLUNAS_MES,
     "gd_fv_instalacoes", "gd_fv_potencia_instalada_kw",
     "gd_fv_kw_por_1000_hab", "gd_fv_instalacoes_por_1000_hab",
     *COLUNAS_PUBLICO_PENDENTE,
 ]
+INDICADORES_MAPA = {
+    "GHI anual (Wh/m².dia)": "ghi_annual_Wh_m2_day",
+    "Instalações fotovoltaicas ANEEL": "gd_fv_instalacoes",
+    "Potência registrada pela ANEEL (kW)": "gd_fv_potencia_instalada_kw",
+    "Instalações por 1.000 habitantes": "gd_fv_instalacoes_por_1000_hab",
+    "Potência por 1.000 habitantes": "gd_fv_kw_por_1000_hab",
+}
+INDICADOR_VAZIO = "Selecione um indicador"
 
 st.set_page_config(
     page_title="Inteligência Comercial Geográfica — Ativa Solar",
@@ -165,16 +174,9 @@ with st.expander("Filtrar indicadores", expanded=True):
             key="filtro_municipios",
         )
 
-    opcoes_indicador = [
-        "Selecione um indicador",
-        "GHI anual (Wh/m².dia)",
-        "Instalações fotovoltaicas ANEEL",
-        "Potência registrada pela ANEEL (kW)",
-        "Instalações por 1.000 habitantes",
-        "Potência por 1.000 habitantes",
-    ]
+    opcoes_indicador = [INDICADOR_VAZIO, *INDICADORES_MAPA]
     if st.session_state.get("indicador_mapa") not in opcoes_indicador:
-        st.session_state["indicador_mapa"] = opcoes_indicador[0]
+        st.session_state["indicador_mapa"] = INDICADOR_VAZIO
     with filtros[2]:
         indicador_mapa = st.selectbox(
             "Indicador",
@@ -182,10 +184,10 @@ with st.expander("Filtrar indicadores", expanded=True):
             key="indicador_mapa",
         )
 
-    if indicador_mapa == opcoes_indicador[0]:
-        st.caption("O indicador será usado no mapa quando ele for adicionado na etapa seguinte.")
+    if indicador_mapa == INDICADOR_VAZIO:
+        st.caption("Sem indicador selecionado, o mapa distingue apenas os estados.")
     else:
-        st.caption(f"Indicador selecionado para o mapa: {indicador_mapa}.")
+        st.caption(f"A cor dos pontos representa: {indicador_mapa}.")
 
 selecionados = df.loc[df["uf"].isin(ufs) & df["municipio"].isin(municipios)].copy()
 
@@ -212,12 +214,59 @@ st.caption(
     "Os totais da ANEEL descrevem geração distribuída registrada nos municípios."
 )
 
-with st.container(height=300, border=True):
-    st.subheader("Mapa dos municípios")
-    st.caption("Área reservada para o mapa na próxima etapa.")
-    st.info(
-        "A base contém coordenadas das sedes municipais para localizar pontos. "
-        "Elas não representam limites municipais; um mapa por áreas dependerá de uma fonte geográfica apropriada."
+with st.container():
+    st.subheader("Mapa das sedes municipais")
+    coluna_metrica = INDICADORES_MAPA.get(indicador_mapa)
+    color_mapa = coluna_metrica if coluna_metrica else "uf"
+    labels_mapa = {
+        "municipio": "Município",
+        "uf": "UF",
+        "codigo_ibge": "Código IBGE",
+        "ghi_latitude": "Latitude da sede",
+        "ghi_longitude": "Longitude da sede",
+    }
+    if coluna_metrica:
+        labels_mapa[coluna_metrica] = indicador_mapa
+
+    figura_mapa = px.scatter_map(
+        selecionados,
+        lat="ghi_latitude",
+        lon="ghi_longitude",
+        color=color_mapa,
+        hover_name="municipio",
+        hover_data={
+            "uf": True,
+            "codigo_ibge": True,
+            "ghi_latitude": ":.4f",
+            "ghi_longitude": ":.4f",
+        },
+        labels=labels_mapa,
+        color_discrete_map={"PE": "#138A58", "PB": "#E4A11B"}
+        if not coluna_metrica
+        else None,
+        color_continuous_scale="Viridis" if coluna_metrica else None,
+        map_style="open-street-map",
+        center={
+            "lat": float(selecionados["ghi_latitude"].mean()),
+            "lon": float(selecionados["ghi_longitude"].mean()),
+        },
+        zoom=7,
+        height=390,
+    )
+    figura_mapa.update_layout(
+        margin={"l": 0, "r": 0, "t": 0, "b": 0},
+        legend_title_text="UF" if not coluna_metrica else None,
+    )
+    st.plotly_chart(
+        figura_mapa,
+        width="stretch",
+        config={"scrollZoom": False},
+        key="mapa_sedes_municipais",
+        alt="Mapa com pontos nas coordenadas das sedes dos municípios selecionados.",
+    )
+    st.caption(
+        "Cada ponto usa a coordenada da sede municipal do INPE; não representa o limite do município nem mede telhados. "
+        "O mapa-base do OpenStreetMap requer conexão à internet."
     )
 
 st.subheader("Públicos e área atendida")
