@@ -29,7 +29,7 @@ O código IBGE de sete dígitos é a chave de integração das bases. A presenç
 4. Como variam, entre os municípios, as razões de instalações e de potência fotovoltaica registradas pela ANEEL por 1.000 habitantes estimados?
 5. Que associação descritiva existe entre a população municipal estimada e o número de instalações fotovoltaicas registradas pela ANEEL nos 12 municípios?
 
-As cinco perguntas foram adaptadas aos dados disponíveis e às análises com saídas salvas no notebook exploratório. Assim, não dependem da coleta de domicílios, da definição de CNAEs, da confirmação da área atendida nem de uma série anual da ANEEL. Essas lacunas continuam relevantes para possíveis estudos comerciais futuros, mas não bloqueiam as perguntas atuais. O documento editável [Perguntas de Negócio Revisadas](Documentação/Perguntas_de_Negocio_Revisadas.md) detalha dados, métricas, status e limitações de cada uma.
+As cinco perguntas têm resultados salvos no notebook exploratório. Para cada uma, a equipe documentou a métrica, o resultado observado, a célula onde conferi-lo e os limites de interpretação em [Perguntas de Negócio Revisadas](Documentação/Perguntas_de_Negocio_Revisadas.md).
 
 ## Fontes de dados e situação
 
@@ -99,6 +99,6 @@ A dashboard é exploratória e não gera prioridade comercial final. Os dados da
 | `Base de dados/05_bases_tratadas/` | Base integrada limpa, dicionário e relatório de qualidade. |
 | `Notebooks/` | Notebooks separados de limpeza, validação, integração e exportação e de análise exploratória. |
 | `Dashboard/` | Aplicação exploratória em Streamlit e dependências necessárias para executá-la. |
-| `Documentação/` | Entregas acadêmicas, PDF da primeira entrega, DOCX de limpeza e análise inicial e [perguntas de negócio revisadas](Documentação/Perguntas_de_Negocio_Revisadas.md). |
+| `Documentação/` | [Guia unificado da apresentação DEILAS em Word](Documentação/Guia_Unificado_Apresentacao_DEILAS.docx) para o ensaio e [roteiro resumido](Documentação/Roteiro_Apresentacao_DEILAS_Equipe_4.md) com os tempos e a divisão das etapas entre os integrantes. O PDF da primeira entrega e o DOCX de limpeza e análise inicial registram fases anteriores do projeto. |
 
 Os CSVs tabulares usam UTF-8 com BOM e ponto e vírgula como separador. As bases integradas e tratadas usam vírgula decimal; os recortes originais do INPE usam ponto decimal. Trate o código IBGE como texto e preserve campos vazios como ausências.
