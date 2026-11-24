@@ -1,6 +1,6 @@
 # Perguntas de Negócio — escopo analítico disponível
 
-Documento editável de referência para as análises do projeto acadêmico de **Análise de Dados e BI do UNIPÊ**.
+Referência das cinco perguntas do projeto **Inteligência Comercial Geográfica para a Ativa Solar**, da disciplina de Análise de Dados e BI do UNIPÊ. No DEILAS, Pedro Antônio usa as perguntas para explicar as métricas (E) e Arlan usa os resultados para apresentar a análise (A). A divisão completa da apresentação está no [guia unificado da equipe](Guia_Unificado_Apresentacao_DEILAS.docx).
 
 ## Intuito e escopo
 
@@ -19,7 +19,9 @@ O recorte permanece fixo nos 12 municípios — seis em cada estado. A inclusão
 
 O código IBGE de sete dígitos é a chave usada na integração das bases.
 
-## Perguntas, dados, métricas e status
+## Perguntas, métricas e resultados observados
+
+As posições de célula abaixo contam a partir de 1, incluindo as células de texto do [notebook exploratório](../Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb). As tabelas e os gráficos já estão salvos no arquivo.
 
 ### 1. Comparação anual do GHI
 
@@ -35,7 +37,7 @@ O código IBGE de sete dígitos é a chave usada na integração das bases.
 - Tabela e ordenação descritiva dos valores anuais por município, incluindo a leitura dos maiores e menores valores observados.
 - Comparação em **Wh/m².dia**, sem tratar a ordem como classificação comercial.
 
-**Status atual:** respondível com a base `Base de dados/05_bases_tratadas/base_integrada_limpa.csv`. A comparação e a saída estão salvas no notebook `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb`.
+**Resultado observado (célula 5).** A média diária anual de irradiação global horizontal (GHI) varia de **5.292 Wh/m².dia em Abreu e Lima** a **5.532 Wh/m².dia em Ilha de Itamaracá**.
 
 **Limitações:** o GHI é uma referência histórica nas coordenadas das sedes municipais, com resolução aproximada de 0,1° (cerca de 10 km). Não mede telhados ou imóveis específicos, não descreve todos os pontos do município e não é previsão das condições atuais.
 
@@ -53,7 +55,7 @@ O código IBGE de sete dígitos é a chave usada na integração das bases.
 - Comparação dos valores de cada mês entre municípios.
 - Tabela mensal e gráfico dos perfis ao longo dos 12 meses, preservando a unidade original.
 
-**Status atual:** respondível com os campos mensais disponíveis. A tabela comparativa e o gráfico mensal estão salvos no notebook exploratório versionado.
+**Resultado observado (célula 7).** Nas 12 sedes, o valor de junho fica abaixo do de dezembro. Na tabela de 12 meses, os extremos são **4.161 Wh/m².dia em Abreu e Lima, em junho**, e **6.256 Wh/m².dia em Itapissuma, em dezembro**.
 
 **Limitações:** os meses representam médias diárias históricas, não medições mensais de telhados nem uma série de mudanças entre anos. O resultado deve ser descrito como sazonalidade histórica das referências municipais.
 
@@ -72,7 +74,7 @@ O código IBGE de sete dígitos é a chave usada na integração das bases.
 - Potência agregada registrada por município, em kW.
 - Comparação descritiva dos totais entre os 12 municípios.
 
-**Status atual:** respondível com os dados ANEEL integrados e com as tabelas e gráficos já salvos no notebook exploratório.
+**Resultado observado (células 9 e 11).** João Pessoa concentra os maiores totais do recorte, com **10.448 instalações** e **118.223,30 kW**. Alhandra tem a menor contagem (122 instalações) e Caaporã, a menor potência (1.213,37 kW).
 
 **Limitações:** os valores descrevem geração distribuída registrada nos municípios, não clientes, instalações vendidas, vendas ou faturamento da Ativa Solar. A fotografia não permite inferir evolução anual, demanda não atendida ou capacidade livre da rede. Baixa adoção, isoladamente, não comprova oportunidade comercial.
 
@@ -91,7 +93,7 @@ O código IBGE de sete dígitos é a chave usada na integração das bases.
 - Instalações por 1.000 habitantes = instalações fotovoltaicas ÷ população estimada × 1.000.
 - Potência em kW por 1.000 habitantes = potência agregada em kW ÷ população estimada × 1.000.
 
-**Status atual:** respondível. As duas razões foram recalculadas para os 12 municípios, conferidas sem divergências após arredondamento a duas casas decimais e comparadas no notebook exploratório, com saídas salvas.
+**Resultado observado (células 13 e 15).** Ao considerar o porte populacional, Ilha de Itamaracá apresenta a maior razão de instalações (**36,08 por 1.000 habitantes**) e Conde, a maior razão de potência (**363,88 kW por 1.000 habitantes**). O relatório de qualidade registra a conferência dos dois indicadores nos 12 municípios, sem divergências após arredondamento a duas casas.
 
 **Limitações:** são razões descritivas com referências temporais distintas. Não são percentuais de domicílios com energia solar, taxas de clientes da empresa nem medidas de potencial de mercado. População é usada somente como denominador desses indicadores e não substitui domicílios ocupados.
 
@@ -110,7 +112,7 @@ O código IBGE de sete dígitos é a chave usada na integração das bases.
 - Gráfico de dispersão entre população e instalações.
 - Correlação de Pearson para descrever a associação linear na amostra municipal, acompanhada da leitura dos valores absolutos e das diferenças de escala.
 
-**Status atual:** respondível. O notebook exploratório tem o gráfico, a saída numérica e a interpretação salvos. A correlação registrada é **0,992** para os 12 municípios.
+**Resultado observado (célula 17).** O gráfico de dispersão e a correlação de Pearson (**r = 0,992**) mostram uma associação linear positiva entre a população estimada e o número de instalações nos 12 municípios.
 
 **Limitações:** a correlação descreve somente esta amostra de 12 municípios; não demonstra causalidade, não é previsão e pode refletir diferenças de porte populacional. Não deve ser interpretada como relação entre população e clientes ou vendas da Ativa Solar.
 
@@ -134,8 +136,7 @@ As cinco perguntas acima não dependem de novas coletas: os campos necessários 
 
 ## Artefatos de referência
 
-- Base integrada tratada, dicionário e relatório de qualidade: `Base de dados/05_bases_tratadas/`.
-- Notebook exploratório com análises executadas e saídas salvas: `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb`.
-- Dashboard exploratória: `Dashboard/app.py`.
+- [Base tratada, dicionário e relatório de qualidade](../Base%20de%20dados/05_bases_tratadas/)
+- [Código da dashboard em Streamlit](../Dashboard/app.py)
 
 Este documento delimita perguntas compatíveis com os dados e análises disponíveis; não substitui os metadados das fontes, os dicionários ou a metodologia de tratamento.
