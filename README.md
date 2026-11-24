@@ -23,13 +23,13 @@ O código IBGE de sete dígitos é a chave de integração das bases. A presenç
 
 ## Perguntas de negócio
 
-1. Entre os municípios do recorte com atendimento confirmado, onde há mais domicílios particulares permanentes ocupados e estabelecimentos ativos nos CNAEs definidos pela empresa, analisados separadamente?
-2. Qual é a participação de cada município nos públicos residencial e empresarial da área atendida?
-3. Como o GHI anual e mensal varia entre as sedes municipais?
-4. Como as instalações fotovoltaicas e a potência registradas pela ANEEL se distribuem atualmente? A evolução anual será analisada se forem obtidos registros com datas de conexão.
-5. Quais municípios e segmentos podem compor uma lista preliminar para validação comercial, considerando a área atendida, o tamanho dos públicos e os indicadores de GHI e ANEEL como contexto?
+1. Como os valores anuais históricos de GHI se comparam entre as sedes dos 12 municípios?
+2. Como os valores médios diários mensais de GHI variam entre as sedes dos 12 municípios ao longo do ano?
+3. Como se distribuem, entre os 12 municípios, as instalações fotovoltaicas e a potência agregada registradas pela ANEEL?
+4. Como variam, entre os municípios, as razões de instalações e de potência fotovoltaica registradas pela ANEEL por 1.000 habitantes estimados?
+5. Que associação descritiva existe entre a população municipal estimada e o número de instalações fotovoltaicas registradas pela ANEEL nos 12 municípios?
 
-As perguntas, os dados e métricas necessários, o status e as limitações de cada análise estão organizados no documento editável [Perguntas de Negócio Revisadas](Documentação/Perguntas_de_Negocio_Revisadas.md).
+As cinco perguntas foram adaptadas aos dados disponíveis e às análises com saídas salvas no notebook exploratório. Assim, não dependem da coleta de domicílios, da definição de CNAEs, da confirmação da área atendida nem de uma série anual da ANEEL. Essas lacunas continuam relevantes para possíveis estudos comerciais futuros, mas não bloqueiam as perguntas atuais. O documento editável [Perguntas de Negócio Revisadas](Documentação/Perguntas_de_Negocio_Revisadas.md) detalha dados, métricas, status e limitações de cada uma.
 
 ## Fontes de dados e situação
 
@@ -38,10 +38,10 @@ As perguntas, os dados e métricas necessários, o status e as limitações de c
 | **INPE/LABREN — Atlas Brasileiro de Energia Solar, 2ª edição (2017)** | GHI anual e mensal das sedes municipais, com médias diárias em **Wh/m².dia**. Estimativas da série histórica **1999–2015**, com resolução de aproximadamente **0,1° (cerca de 10 km)**. | **Disponível** para os 12 municípios, nos recortes estaduais e na base consolidada. É uma referência histórica das sedes municipais, não uma medição de telhados. O repositório também contém campos identificados como GTI10; confira os metadados antes de associar o rótulo a um ângulo fixo. |
 | **ANEEL — empreendimentos de MMGD fotovoltaica** | Número de instalações, potência instalada agregada (**kW**) e unidades consumidoras que recebem créditos. Arquivo `ANEEL_MMGD_fotovoltaica_12_municipios_PE_PB_2026-11-10.csv`, baixado em **10/11/2026**; a fonte oficial é atualizada diariamente. | **Disponível** como agregado municipal dos 12 municípios na data do arquivo. É uma fotografia, não uma série histórica anual de conexões. |
 | **IBGE — Estimativas de População 2026** | População municipal estimada, em **habitantes**, com referência em **01/07/2026**. | **Disponível** para os 12 municípios como contexto demográfico; não substitui a contagem de domicílios. |
-| **IBGE — Censo 2022** | Domicílios particulares permanentes ocupados, em domicílios. | **Pendente de coleta e conferência** das categorias e unidades da tabela. A base integrada tem campos preparados, ainda vazios. |
-| **Receita Federal — dados abertos do CNPJ** | Estabelecimentos ativos por CNAEs prioritários a definir com a empresa. | **Pendente**: os CNAEs ainda não foram definidos, e os estabelecimentos não foram coletados. Não há contagens nem data de referência no repositório. |
-| **Ativa Solar — área de atendimento** | Confirmação dos municípios atendidos dentro do recorte. | **Pendente de confirmação da empresa**. O arquivo `atendimento_e_publico_alvo.csv` lista os 12 municípios, mas os campos de confirmação e CNAEs estão vazios. |
-| **ANEEL — evolução anual** | Registros fotovoltaicos com datas de conexão para agregar instalações por município e ano. | **Pendente**: os dados de entrada com datas e a série anual não estão no repositório. Há uma rotina de processamento, ainda dependente desses registros. |
+| **IBGE — Censo 2022** | Domicílios particulares permanentes ocupados, em domicílios. | **Não coletado; fora das perguntas atuais.** Necessário para uma futura análise do público residencial por domicílios, não para as cinco perguntas deste README. |
+| **Receita Federal — dados abertos do CNPJ** | Estabelecimentos ativos por CNAEs prioritários. | **Não coletados; fora das perguntas atuais.** Os CNAEs ainda não foram definidos; esses dados seriam necessários para uma futura análise do público empresarial. |
+| **Ativa Solar — área de atendimento** | Confirmação dos municípios atendidos dentro do recorte. | **Não confirmada; fora das perguntas atuais.** O arquivo `atendimento_e_publico_alvo.csv` lista os 12 municípios, mas os campos de confirmação e CNAEs estão vazios. O recorte não deve ser confundido com a cobertura da empresa. |
+| **ANEEL — evolução anual** | Registros fotovoltaicos com datas de conexão para agregar instalações por município e ano. | **Não disponível; fora das perguntas atuais.** O conjunto atual analisa apenas a fotografia municipal de 10/11/2026. Há uma rotina de processamento, ainda dependente de registros com datas. |
 
 As fontes e os links consultados estão em `Base de dados/01_bases_recebidas/fontes_e_links.csv`. As decisões metodológicas, os dicionários e as limitações das fontes estão nos arquivos de metodologia e documentação da base.
 
@@ -56,13 +56,13 @@ As fontes e os links consultados estão em `Base de dados/01_bases_recebidas/fon
 - A base não inclui, entre outros fatores, consumo e contas de energia, renda, intenção de compra, viabilidade de conexão, potencial de telhados, restrições locais, custos ou logística de atendimento. A triagem não aprova endereço, terreno ou projeto.
 - Para uso do Atlas, atribua **LABREN / CCST / INPE — Brasil** e observe os metadados: a reprodução ou cópia para fins comerciais requer autorização expressa do CCST/INPE.
 
-## Situação atual e dados pendentes
+## Situação atual e possíveis ampliações futuras
 
 **Bases e qualidade disponíveis:** as bases de INPE, ANEEL e IBGE foram integradas pelo código IBGE para os 12 municípios. A base tratada, o dicionário e o relatório de qualidade (`Base de dados/05_bases_tratadas/`) registram conferências de cobertura, unicidade, junções, ausências e tipos. O relatório, executado em **20/11/2026**, documenta também o recálculo dos indicadores de instalações e potência por mil habitantes, sem divergências após arredondamento a duas casas. Os campos complementares de domicílios, estabelecimentos por CNAE e atendimento permanecem vazios para todos os municípios.
 
 **Notebook de limpeza:** `Notebooks/Limpeza_Inicial_DEILAS_Ativa_Solar.ipynb` é dedicado à limpeza, validação e integração das bases e à exportação da base tratada, do dicionário e do relatório de qualidade.
 
-**Notebook exploratório:** `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb` é separado da limpeza. A análise permanece **parcial**, não concluída. Já inclui comparações de GHI anual e mensal entre os municípios, distribuição atual de instalações e potência da ANEEL, razões por mil habitantes e associação descritiva entre população e instalações. Essas análises são exploratórias: não demonstram causalidade, demanda ou oportunidade comercial da Ativa Solar.
+**Notebook exploratório:** `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb` é separado da limpeza. Ele contém as cinco análises correspondentes às perguntas deste README: GHI anual e mensal, distribuição atual de instalações e potência da ANEEL, razões por mil habitantes e associação descritiva entre população e instalações. As nove células de código têm contagens de execução e saídas salvas. Esses resultados descrevem os dados dos 12 municípios; não demonstram causalidade, demanda ou oportunidade comercial da Ativa Solar.
 
 ### Links dos notebooks no Google Colab
 
@@ -73,11 +73,11 @@ Use os links abaixo para abrir cada notebook no Google Colab.
 | [Limpeza e integração](Notebooks/Limpeza_Inicial_DEILAS_Ativa_Solar.ipynb) | [Abrir no Colab](https://colab.research.google.com/drive/1ZJNjEsiSUUG9xCWeeX6IvFgJl_RWmPI7?usp=sharing) |
 | [Análise exploratória](Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb) | [Abrir no Colab](https://colab.research.google.com/drive/1RvH-tCXihHmVWonrlx2fSAdK0dh8fv9s#scrollTo=load-treated-base) |
 
-**Ainda pendente:** coletar e conferir os domicílios ocupados do Censo 2022; definir os CNAEs com a empresa e obter as contagens de estabelecimentos ativos; confirmar a área atendida; e obter registros ANEEL com datas de conexão para eventual evolução anual. Sem os dados de público e atendimento, não é possível concluir as comparações residenciais e empresariais nem formular a lista preliminar da pergunta 5. O projeto também não definiu ponderação nem município vencedor.
+**Escopo respondível sem novas coletas:** as cinco perguntas atuais podem ser respondidas com as bases tratadas e as saídas salvas no notebook exploratório. Domicílios do Censo 2022, estabelecimentos ativos por CNAE, confirmação de atendimento e registros ANEEL com datas de conexão continuam ausentes, mas são requisitos de possíveis ampliações futuras — não dependências das perguntas atuais. Sem eles, o trabalho não mede o tamanho dos públicos residencial e empresarial da Ativa Solar, não confirma cobertura da empresa e não deve produzir uma lista ou prioridade comercial definitiva.
 
 ## Dashboard
 
-O MVP da dashboard está implementado em `Dashboard/app.py`, com **Python**, **pandas**, **Plotly** e **Streamlit**. Ele carrega a base integrada limpa e permite filtrar por estado e município para comparar GHI anual e mensal, instalações e potência fotovoltaica registradas pela ANEEL, razões por mil habitantes e população estimada como contexto. A dashboard também apresenta os públicos residencial e empresarial e a confirmação de atendimento como pendentes enquanto esses campos não forem preenchidos; valores ausentes não são convertidos em zero.
+O MVP da dashboard está implementado em `Dashboard/app.py`, com **Python**, **pandas**, **Plotly** e **Streamlit**. Ele carrega a base integrada limpa e permite filtrar por estado e município para comparar GHI anual e mensal, instalações e potência fotovoltaica registradas pela ANEEL, razões por mil habitantes e população estimada como contexto. A dashboard também exibe como não preenchidos os campos de público residencial e empresarial e de confirmação de atendimento. Esses campos representam lacunas para possíveis ampliações comerciais, não entradas das cinco perguntas atuais; valores ausentes não são convertidos em zero.
 
 Para executar a aplicação a partir da raiz do repositório:
 
@@ -86,7 +86,7 @@ python -m pip install -r Dashboard/requirements.txt
 python -m streamlit run Dashboard/app.py
 ```
 
-A dashboard é exploratória e não gera prioridade comercial final. Os dados da ANEEL são geração distribuída registrada nos municípios. Uma evolução anual da ANEEL depende de registros com datas de conexão; a análise dos públicos e a validação comercial dependem da confirmação de atendimento e da coleta dos dados pendentes.
+A dashboard é exploratória e não gera prioridade comercial final. Os dados da ANEEL são geração distribuída registrada nos municípios. A ausência de domicílios, CNAEs, confirmação de atendimento e registros anuais da ANEEL limita possíveis análises comerciais futuras, mas não impede os cinco comparativos definidos para o escopo atual.
 
 ## Organização do repositório
 

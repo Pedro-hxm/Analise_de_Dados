@@ -1,12 +1,12 @@
-# Perguntas de Negócio Revisadas — Ativa Solar
+# Perguntas de Negócio — escopo analítico disponível
 
-Documento de referência editável para orientar as análises futuras do projeto acadêmico de **Análise de Dados e BI do UNIPÊ**.
+Documento editável de referência para as análises do projeto acadêmico de **Análise de Dados e BI do UNIPÊ**.
 
 ## Intuito e escopo
 
-Comparar os 12 municípios do recorte de Pernambuco e Paraíba, com dados públicos, para apoiar uma triagem inicial de localidades que valha a pena investigar para futuras ações de prospecção da Ativa Solar. A análise é exploratória: não comprova demanda, não identifica clientes da Ativa Solar e não estima vendas ou faturamento da empresa.
+Comparar, com dados públicos já disponíveis, os 12 municípios do recorte de Pernambuco e Paraíba para apoiar uma triagem exploratória de localidades que possam merecer investigação posterior para ações de prospecção da Ativa Solar. As perguntas abaixo foram delimitadas aos dados e às análises que já constam no repositório. Elas não comprovam demanda, não identificam clientes da Ativa Solar e não estimam vendas ou faturamento.
 
-O recorte permanece fixo nos municípios abaixo. A inclusão na lista não confirma atendimento da empresa.
+O recorte permanece fixo nos 12 municípios — seis em cada estado. A inclusão de um município no estudo não confirma que a empresa o atenda.
 
 | Pernambuco | Paraíba |
 |---|---|
@@ -17,128 +17,125 @@ O recorte permanece fixo nos municípios abaixo. A inclusão na lista não confi
 | Itambé | Pedras de Fogo |
 | Itapissuma | Pitimbu |
 
-O código IBGE de sete dígitos é a chave para integrar as bases.
+O código IBGE de sete dígitos é a chave usada na integração das bases.
 
 ## Perguntas, dados, métricas e status
 
-### 1. Tamanho dos públicos por município
+### 1. Comparação anual do GHI
 
-**Pergunta:** Entre os municípios do recorte com atendimento confirmado, onde há mais domicílios particulares permanentes ocupados e estabelecimentos ativos nos CNAEs definidos pela empresa, analisados separadamente?
+**Pergunta:** Como os valores anuais históricos de GHI se comparam entre as sedes dos 12 municípios?
 
 **Dados necessários**
 
-- Confirmação da Ativa Solar sobre quais dos 12 municípios são atendidos.
-- Quantidade de domicílios particulares permanentes ocupados do Censo 2022, por município.
-- CNAEs prioritários definidos com a empresa e quantidade de estabelecimentos ativos por município, a partir dos dados abertos do CNPJ da Receita Federal.
-- Data de referência da extração de cada base; para os estabelecimentos, regra de deduplicação e tratamento de CNAE principal e secundário.
+- GHI anual do INPE/LABREN para cada sede municipal, disponível na base integrada tratada.
+- Os valores são médias diárias em **Wh/m².dia**, estimadas a partir da série histórica **1999–2015**.
 
 **Métricas**
 
-- Contagem de domicílios particulares permanentes ocupados por município atendido.
-- Contagem de estabelecimentos ativos por município atendido, para os CNAEs acordados.
-- Comparações e ordenações independentes para o público residencial e o empresarial; não somar os dois públicos.
+- Tabela e ordenação descritiva dos valores anuais por município, incluindo a leitura dos maiores e menores valores observados.
+- Comparação em **Wh/m².dia**, sem tratar a ordem como classificação comercial.
 
-**Status atual:** pendente. Os domicílios do Censo 2022 ainda não foram coletados. Os CNAEs não foram definidos e as contagens de estabelecimentos ativos não foram obtidas. A confirmação de atendimento também está pendente. Os campos preparados para esses dados estão vazios nos 12 municípios.
+**Status atual:** respondível com a base `Base de dados/05_bases_tratadas/base_integrada_limpa.csv`. A comparação e a saída estão salvas no notebook `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb`.
 
-**Limitações e cuidados:** a população estimada pelo IBGE não substitui domicílios. Municípios sem confirmação de atendimento não podem ser tratados como atendidos nem incluídos no denominador da área atendida. Campos vazios significam ausência de coleta ou confirmação, não zero. A contagem por CNAE exige explicitar a referência temporal, a correspondência do código municipal da Receita Federal com o código IBGE e como estabelecimentos com CNAE principal e secundário serão contados.
+**Limitações:** o GHI é uma referência histórica nas coordenadas das sedes municipais, com resolução aproximada de 0,1° (cerca de 10 km). Não mede telhados ou imóveis específicos, não descreve todos os pontos do município e não é previsão das condições atuais.
 
-### 2. Participação municipal nos públicos atendidos
+### 2. Comparação mensal do GHI
 
-**Pergunta:** Qual é a participação de cada município nos públicos residencial e empresarial da área atendida?
+**Pergunta:** Como os valores médios diários mensais de GHI variam entre as sedes dos 12 municípios ao longo do ano?
 
 **Dados necessários**
 
-- Confirmação da lista de municípios atendidos pela Ativa Solar.
-- Contagens de domicílios ocupados do Censo 2022 e de estabelecimentos ativos nos CNAEs acordados, com suas referências e regras documentadas.
+- Os 12 campos mensais de GHI do INPE/LABREN para cada sede municipal, disponíveis na base integrada tratada.
+- Médias diárias mensais em **Wh/m².dia**, referentes à série histórica **1999–2015**.
 
 **Métricas**
 
-- Participação residencial: domicílios do município divididos pelo total de domicílios nos municípios com atendimento confirmado, multiplicado por 100.
-- Participação empresarial: estabelecimentos do município divididos pelo total de estabelecimentos nos municípios com atendimento confirmado, multiplicado por 100.
-- Calcular e apresentar os dois segmentos separadamente.
+- Comparação dos valores de cada mês entre municípios.
+- Tabela mensal e gráfico dos perfis ao longo dos 12 meses, preservando a unidade original.
 
-**Status atual:** pendente. A cobertura atendida não foi confirmada; as contagens residenciais e empresariais necessárias também estão pendentes. Portanto, ainda não há denominadores para calcular as participações.
+**Status atual:** respondível com os campos mensais disponíveis. A tabela comparativa e o gráfico mensal estão salvos no notebook exploratório versionado.
 
-**Limitações e cuidados:** não calcular percentuais com campos vazios tratados como zero. O denominador deve incluir somente municípios com atendimento confirmado e usar a mesma definição e referência para cada segmento. A participação descreve a distribuição do público medido, não intenção de compra nem probabilidade de contratação.
+**Limitações:** os meses representam médias diárias históricas, não medições mensais de telhados nem uma série de mudanças entre anos. O resultado deve ser descrito como sazonalidade histórica das referências municipais.
 
-### 3. Variação do GHI entre sedes municipais
+### 3. Distribuição municipal da geração distribuída fotovoltaica registrada pela ANEEL
 
-**Pergunta:** Como o GHI anual e mensal varia entre as sedes municipais?
+**Pergunta:** Como se distribuem, entre os 12 municípios, as instalações fotovoltaicas e a potência agregada registradas pela ANEEL?
 
 **Dados necessários**
 
-- Campos anuais e mensais de GHI do INPE/LABREN — Atlas Brasileiro de Energia Solar, 2ª edição (2017), disponíveis para os 12 municípios.
-- Os valores representam médias diárias em **Wh/m².dia**, estimadas a partir da série histórica **1999–2015**.
+- Número de instalações fotovoltaicas e potência instalada agregada em **kW** no arquivo `ANEEL_MMGD_fotovoltaica_12_municipios_PE_PB_2026-11-10.csv`.
+- Fotografia municipal com referência em **10/11/2026**.
 
 **Métricas**
 
-- Comparação e ordenação dos valores anuais de GHI entre sedes.
-- Comparações mensais entre municípios e leitura da sazonalidade dentro da série histórica.
-- Amplitude ou diferenças observadas, sempre mantendo a unidade original.
+- Totais de instalações fotovoltaicas por município.
+- Potência agregada registrada por município, em kW.
+- Comparação descritiva dos totais entre os 12 municípios.
 
-**Status atual:** os dados anuais e mensais estão no repositório. O notebook versionado `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb` contém comparações exploratórias anual e mensal entre as sedes municipais, com execução e saídas salvas. A dashboard MVP também apresenta essas comparações. A síntese dos resultados no relatório final continua pendente. A cópia do notebook aberta no link do Colab não foi comparada nesta revisão com a versão do GitHub.
+**Status atual:** respondível com os dados ANEEL integrados e com as tabelas e gráficos já salvos no notebook exploratório.
 
-**Limitações e cuidados:** o GHI do INPE é uma referência histórica para as coordenadas das sedes municipais, com resolução aproximada de 0,1° (cerca de 10 km); não é medição de telhados, imóveis ou de todo o território municipal. A série 1999–2015 não deve ser apresentada como condição atual ou previsão. As médias mensais indicam sazonalidade histórica, não evolução entre anos. O projeto também possui campos identificados como GTI10; confira os metadados antes de atribuir um ângulo fixo ao rótulo.
+**Limitações:** os valores descrevem geração distribuída registrada nos municípios, não clientes, instalações vendidas, vendas ou faturamento da Ativa Solar. A fotografia não permite inferir evolução anual, demanda não atendida ou capacidade livre da rede. Baixa adoção, isoladamente, não comprova oportunidade comercial.
 
-### 4. Distribuição da geração distribuída fotovoltaica registrada pela ANEEL
+### 4. Indicadores da ANEEL por população estimada
 
-**Pergunta:** Como as instalações fotovoltaicas e a potência registradas pela ANEEL se distribuem atualmente? A evolução anual será analisada se forem obtidos registros com datas de conexão.
+**Pergunta:** Como variam, entre os municípios, as razões de instalações e de potência fotovoltaica registradas pela ANEEL por 1.000 habitantes estimados?
 
 **Dados necessários**
 
-- Arquivo municipal de MMGD fotovoltaica da ANEEL para os 12 municípios, com referência de **10/11/2026**.
-- Número de instalações, potência instalada agregada em **kW** e unidades consumidoras que recebem créditos.
-- Para calcular evolução anual: registros de empreendimentos com município e data de conexão, suficientes para agregação por ano.
+- Instalações e potência da ANEEL, com referência em **10/11/2026**.
+- População municipal estimada pelo IBGE para **2026**, com referência em **01/07/2026**, medida em habitantes.
+- Os dois indicadores derivados já constam da base integrada tratada e foram recalculados e conferidos no relatório de qualidade.
 
 **Métricas**
 
-- Distribuição municipal do número de instalações fotovoltaicas e da potência instalada total em kW.
-- Como contexto descritivo, instalações e potência por mil habitantes, já recalculadas na base tratada com a estimativa populacional de 2026.
-- Se a série com datas de conexão for obtida, contagem e potência por município e ano, com regras de inclusão documentadas.
+- Instalações por 1.000 habitantes = instalações fotovoltaicas ÷ população estimada × 1.000.
+- Potência em kW por 1.000 habitantes = potência agregada em kW ÷ população estimada × 1.000.
 
-**Status atual:** o arquivo da ANEEL está disponível como fotografia municipal baixada em 10/11/2026. O notebook exploratório versionado contém comparações preliminares do número de instalações e da potência, além dos indicadores por mil habitantes, com saídas salvas; a dashboard MVP apresenta essas métricas. A série histórica anual não está disponível; depende da obtenção de registros com datas de conexão.
+**Status atual:** respondível. As duas razões foram recalculadas para os 12 municípios, conferidas sem divergências após arredondamento a duas casas decimais e comparadas no notebook exploratório, com saídas salvas.
 
-**Limitações e cuidados:** os dados descrevem geração distribuída registrada nos municípios; não identificam clientes, vendas ou faturamento da Ativa Solar. Unidades consumidoras que recebem créditos não são equivalentes a instalações ou clientes únicos. A fotografia de 10/11/2026 não demonstra evolução temporal. Baixa adoção solar, isoladamente, não prova oportunidade comercial, demanda não atendida ou capacidade livre da rede.
+**Limitações:** são razões descritivas com referências temporais distintas. Não são percentuais de domicílios com energia solar, taxas de clientes da empresa nem medidas de potencial de mercado. População é usada somente como denominador desses indicadores e não substitui domicílios ocupados.
 
-### 5. Lista preliminar para validação comercial
+### 5. Associação descritiva entre população e instalações
 
-**Pergunta:** Quais municípios e segmentos podem compor uma lista preliminar para validação comercial, considerando a área atendida, o tamanho dos públicos e os indicadores de GHI e ANEEL como contexto?
+**Pergunta:** Que associação descritiva existe entre a população municipal estimada e o número de instalações fotovoltaicas registradas pela ANEEL nos 12 municípios?
 
 **Dados necessários**
 
-- Municípios do recorte com atendimento confirmado pela Ativa Solar.
-- Contagens comparáveis de domicílios ocupados e estabelecimentos ativos nos CNAEs acordados.
-- Indicadores de GHI anual e mensal e fotografia municipal da ANEEL, com períodos e unidades preservados.
-- Critérios explícitos para organizar a lista, documentando eventuais decisões de ponderação antes de aplicá-las.
+- População estimada pelo IBGE para 2026, referência em **01/07/2026**.
+- Número de instalações fotovoltaicas da ANEEL, referência em **10/11/2026**.
+- Os dois campos estão disponíveis para os 12 municípios na base integrada tratada.
 
-**Métricas e critérios de leitura**
+**Métricas**
 
-- Tamanho e participação de cada público por município atendido, mantendo residencial e empresarial separados.
-- GHI anual e mensal e instalações/potência da ANEEL como indicadores de contexto para comparar os municípios.
-- Lista preliminar de municípios e segmentos acompanhada dos critérios e das limitações; não produzir uma pontuação ou vencedor sem regra justificada.
+- Gráfico de dispersão entre população e instalações.
+- Correlação de Pearson para descrever a associação linear na amostra municipal, acompanhada da leitura dos valores absolutos e das diferenças de escala.
 
-**Status atual:** não permite uma recomendação final nem uma lista fundamentada enquanto faltarem as contagens de público e a confirmação da área atendida. Os indicadores ambientais e de geração distribuída existentes, sozinhos, não suprem essas lacunas. O projeto não definiu município vencedor nem ponderação.
+**Status atual:** respondível. O notebook exploratório tem o gráfico, a saída numérica e a interpretação salvos. A correlação registrada é **0,992** para os 12 municípios.
 
-**Limitações e cuidados:** esta pergunta orienta uma triagem para validação comercial posterior, não uma decisão de prospecção ou previsão de vendas. GHI histórico e geração distribuída registrada pela ANEEL são contexto, não prova de demanda da Ativa Solar. Baixa adoção não deve ser tratada isoladamente como oportunidade. A base também não contém consumo, renda, intenção de compra, potencial de telhados, viabilidade de conexão, custos, restrições locais ou logística de atendimento.
+**Limitações:** a correlação descreve somente esta amostra de 12 municípios; não demonstra causalidade, não é previsão e pode refletir diferenças de porte populacional. Não deve ser interpretada como relação entre população e clientes ou vendas da Ativa Solar.
 
-## Pendências transversais e regras de interpretação
+## Dados fora do escopo destas perguntas
 
-- Coletar e conferir os domicílios particulares permanentes ocupados do Censo 2022.
-- Definir com a empresa os CNAEs e coletar os estabelecimentos ativos, documentando data de referência, chave municipal e deduplicação.
-- Confirmar quais municípios do recorte são atendidos pela Ativa Solar.
-- Obter registros da ANEEL com datas de conexão para avaliar a evolução anual, caso estejam disponíveis.
-- Consolidar e interpretar as comparações anual e mensal do GHI no relatório final, mantendo a série 1999–2015 como referência histórica.
-- Preservar ausências como valores pendentes, sem convertê-las em zero; não usar população como substituta de domicílios.
-- Descrever os dados da ANEEL como geração distribuída registrada nos municípios, nunca como clientes da Ativa Solar, vendas ou faturamento.
+As cinco perguntas acima não dependem de novas coletas: os campos necessários e as respectivas análises estão disponíveis na base tratada e no notebook exploratório com execuções e saídas salvas. As lacunas abaixo continuam reais no repositório, mas são requisitos de possíveis ampliações futuras — não impedem responder ao conjunto atual:
+
+- **Domicílios particulares permanentes ocupados do Censo 2022:** não coletados. Seriam necessários para estudar o público residencial por domicílios; a população não pode substituí-los.
+- **CNAEs e estabelecimentos ativos:** os CNAEs não foram definidos e as contagens não foram coletadas. Seriam necessários para estudar o público empresarial.
+- **Área de atendimento da Ativa Solar:** não confirmada. O recorte de 12 municípios é geográfico e não deve ser apresentado como cobertura da empresa.
+- **Histórico anual da ANEEL:** não há registros com datas de conexão disponíveis no repositório. A pergunta atual se limita à fotografia municipal de 10/11/2026; não se deve descrever evolução anual.
+
+## Regras de interpretação
+
+- Não converter campos vazios em zero; eles continuam indicando ausência de coleta ou confirmação.
+- Não usar população estimada como substituta de domicílios particulares permanentes ocupados.
+- Descrever os dados da ANEEL como geração distribuída registrada nos municípios, nunca como clientes ou vendas da Ativa Solar.
 - Tratar o GHI do INPE como referência histórica das sedes municipais, não como medição de telhados específicos.
 - Não interpretar baixa adoção solar, isoladamente, como evidência de oportunidade comercial.
+- Diferenciar valores observados, interpretações descritivas e hipóteses para investigação posterior. Não declarar município vencedor, prioridade comercial definitiva ou recomendação final.
 
-## Estado dos artefatos
+## Artefatos de referência
 
-O repositório contém os notebooks separados de limpeza e análise exploratória, além da base integrada limpa, do dicionário e do relatório de qualidade. O notebook exploratório versionado tem 18 células; suas nove células de código têm contagens de execução e saídas salvas. Os metadados e as saídas registram o kernel local `.venv (3.12.4)` e um caminho do projeto em `E:\Analise de dados\Analise_de_Dados`; isso comprova uma execução local registrada, mas não confirma que a cópia acessada pelo link do Colab seja idêntica.
+- Base integrada tratada, dicionário e relatório de qualidade: `Base de dados/05_bases_tratadas/`.
+- Notebook exploratório com análises executadas e saídas salvas: `Notebooks/Analise_Exploratoria_Ativa_Solar.ipynb`.
+- Dashboard exploratória: `Dashboard/app.py`.
 
-O notebook de limpeza versionado tem 29 células, incluindo 13 células de código, sem contagens de execução ou saídas salvas. Nesta revisão, o código das 13 células foi executado sequencialmente em uma cópia temporária do projeto: a execução gerou a base de 12 municípios, o dicionário com 44 campos e o relatório de qualidade, preservando como ausentes os campos pendentes. Os arquivos publicados no repositório não foram sobrescritos.
-
-A dashboard MVP está em `Dashboard/app.py` e apresenta GHI anual e mensal e indicadores municipais da ANEEL. Ela não produz recomendação ou ranking comercial final enquanto público residencial, público empresarial e atendimento estiverem pendentes.
-
-Este documento registra as perguntas e necessidades analíticas; não substitui a metodologia da base, os dicionários nem os metadados das fontes.
+Este documento delimita perguntas compatíveis com os dados e análises disponíveis; não substitui os metadados das fontes, os dicionários ou a metodologia de tratamento.
