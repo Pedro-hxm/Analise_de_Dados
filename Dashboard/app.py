@@ -132,7 +132,7 @@ st.markdown(
     <style>
     .block-container {{
         max-width: 1440px;
-        padding-top: 1.25rem;
+        padding-top: 1.85rem;
         padding-bottom: 2.5rem;
     }}
     .ativa-hero {{
@@ -162,11 +162,10 @@ st.markdown(
     .ativa-hero__content {{ min-width: 0; }}
     .ativa-hero__eyebrow {{
         color: #FFE092;
-        font-size: 0.76rem;
-        font-weight: 700;
-        letter-spacing: 0.11em;
-        margin: 0 0 0.55rem;
-        text-transform: uppercase;
+        font-size: 0.92rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        margin: 0.4rem 0 0;
     }}
     .ativa-hero__title {{
         color: #ffffff;
@@ -182,7 +181,7 @@ st.markdown(
         margin: 0.65rem 0 0;
     }}
     @media (max-width: 640px) {{
-        .block-container {{ padding-top: 0.75rem; }}
+        .block-container {{ padding-top: 1.1rem; }}
         .ativa-hero {{
             align-items: flex-start;
             border-radius: 16px;
@@ -199,8 +198,8 @@ st.markdown(
             <img src="data:image/png;base64,{logo_base64}" alt="Ativa Solar">
         </div>
         <div class="ativa-hero__content">
-            <p class="ativa-hero__eyebrow">UNIPÊ · Análise de Dados e BI · Ativa Solar</p>
             <h1 class="ativa-hero__title">Inteligência Comercial Geográfica</h1>
+            <p class="ativa-hero__eyebrow">UNIPÊ · Análise de Dados e BI · Ativa Solar</p>
             <p class="ativa-hero__subtitle">Triagem exploratória · Pernambuco e Paraíba · 12 municípios</p>
         </div>
     </header>
