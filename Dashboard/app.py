@@ -1,13 +1,18 @@
 """Dashboard exploratória municipal da Ativa Solar."""
 
+import base64
 from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ASSETS_PATH = Path(__file__).resolve().parent / "assets"
+LOGO_PATH = ASSETS_PATH / "ativa_logo_horizontal.png"
+ICON_PATH = ASSETS_PATH / "ativa_icon.png"
 BASE_PATH = ROOT / "Base de dados" / "05_bases_tratadas" / "base_integrada_limpa.csv"
 MESES = {
     "jan": "Jan", "feb": "Fev", "mar": "Mar", "apr": "Abr",
@@ -39,9 +44,10 @@ INDICADOR_VAZIO = "Selecione um indicador"
 
 st.set_page_config(
     page_title="Inteligência Comercial Geográfica — Ativa Solar",
-    page_icon="☀️",
+    page_icon=str(ICON_PATH),
     layout="wide",
 )
+px.defaults.template = "plotly_white"
 
 
 @st.cache_data
@@ -107,7 +113,7 @@ def figura_barra(dados: pd.DataFrame, coluna: str, titulo: str, eixo: str, casas
         hover_data={"codigo_ibge": True, "uf": True, coluna: f":,.{casas}f"},
         labels={"municipio": "Município", "uf": "UF", coluna: eixo},
         title=titulo,
-        color_discrete_map={"PE": "#138A58", "PB": "#E4A11B"},
+        color_discrete_map={"PE": "#009652", "PB": "#FCC017"},
     )
     figura.update_layout(
         xaxis_title=None,
@@ -120,13 +126,91 @@ def figura_barra(dados: pd.DataFrame, coluna: str, titulo: str, eixo: str, casas
     return figura
 
 
-with st.container():
-    st.title("Inteligência Comercial Geográfica — Ativa Solar")
-    st.caption("Triagem exploratória de 12 municípios de Pernambuco e Paraíba")
-    st.info(
-        "Esta dashboard compara indicadores públicos municipais. Ela não comprova demanda, "
-        "não identifica clientes da Ativa Solar e não estima vendas ou faturamento."
-    )
+logo_base64 = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+st.markdown(
+    f"""
+    <style>
+    .block-container {{
+        max-width: 1440px;
+        padding-top: 1.25rem;
+        padding-bottom: 2.5rem;
+    }}
+    .ativa-hero {{
+        align-items: center;
+        background: linear-gradient(115deg, #006b3b 0%, #009652 100%);
+        border-bottom: 5px solid #FCC017;
+        border-radius: 22px;
+        box-shadow: 0 8px 24px rgba(0, 74, 42, 0.14);
+        color: #ffffff;
+        display: flex;
+        gap: clamp(1.25rem, 4vw, 3rem);
+        margin: 0 0 1rem;
+        min-height: 170px;
+        overflow: hidden;
+        padding: clamp(1.25rem, 3vw, 2.25rem);
+    }}
+    .ativa-hero__logo {{
+        flex: 0 0 clamp(175px, 25%, 300px);
+        line-height: 0;
+    }}
+    .ativa-hero__logo img {{
+        display: block;
+        height: auto;
+        max-width: 100%;
+        width: 100%;
+    }}
+    .ativa-hero__content {{ min-width: 0; }}
+    .ativa-hero__eyebrow {{
+        color: #FFE092;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.11em;
+        margin: 0 0 0.55rem;
+        text-transform: uppercase;
+    }}
+    .ativa-hero__title {{
+        color: #ffffff;
+        font-size: clamp(1.55rem, 3.1vw, 2.45rem);
+        font-weight: 750;
+        letter-spacing: -0.035em;
+        line-height: 1.12;
+        margin: 0;
+    }}
+    .ativa-hero__subtitle {{
+        color: #f1fff6;
+        font-size: clamp(0.95rem, 1.5vw, 1.12rem);
+        margin: 0.65rem 0 0;
+    }}
+    @media (max-width: 640px) {{
+        .block-container {{ padding-top: 0.75rem; }}
+        .ativa-hero {{
+            align-items: flex-start;
+            border-radius: 16px;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: auto;
+            padding: 1.2rem;
+        }}
+        .ativa-hero__logo {{ flex-basis: auto; max-width: 205px; width: 62%; }}
+    }}
+    </style>
+    <header class="ativa-hero">
+        <div class="ativa-hero__logo">
+            <img src="data:image/png;base64,{logo_base64}" alt="Ativa Solar">
+        </div>
+        <div class="ativa-hero__content">
+            <p class="ativa-hero__eyebrow">UNIPÊ · Análise de Dados e BI · Ativa Solar</p>
+            <h1 class="ativa-hero__title">Inteligência Comercial Geográfica</h1>
+            <p class="ativa-hero__subtitle">Triagem exploratória · Pernambuco e Paraíba · 12 municípios</p>
+        </div>
+    </header>
+    """,
+    unsafe_allow_html=True,
+)
+st.info(
+    "Esta dashboard compara indicadores públicos municipais. Ela não comprova demanda, "
+    "não identifica clientes da Ativa Solar e não estima vendas ou faturamento."
+)
 
 try:
     df = carregar_base()
@@ -241,10 +325,12 @@ with st.container():
             "ghi_longitude": ":.4f",
         },
         labels=labels_mapa,
-        color_discrete_map={"PE": "#138A58", "PB": "#E4A11B"}
+        color_discrete_map={"PE": "#009652", "PB": "#FCC017"}
         if not coluna_metrica
         else None,
-        color_continuous_scale="Viridis" if coluna_metrica else None,
+        color_continuous_scale=["#004A2A", "#009652", "#FCC017"]
+        if coluna_metrica
+        else None,
         map_style="open-street-map",
         center={
             "lat": float(selecionados["ghi_latitude"].mean()),
@@ -253,9 +339,30 @@ with st.container():
         zoom=7,
         height=390,
     )
+    if coluna_metrica:
+        figura_mapa.update_traces(marker={"size": 16, "opacity": 1})
+        figura_mapa.add_trace(
+            go.Scattermap(
+                lat=selecionados["ghi_latitude"],
+                lon=selecionados["ghi_longitude"],
+                mode="markers",
+                marker={"size": 23, "color": "#FFFFFF", "opacity": 0.96},
+                hoverinfo="skip",
+                showlegend=False,
+                name="Contorno dos pontos",
+            )
+        )
+        figura_mapa.data = (figura_mapa.data[-1], *figura_mapa.data[:-1])
     figura_mapa.update_layout(
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
         legend_title_text="UF" if not coluna_metrica else None,
+        coloraxis_colorbar={
+            "outlinecolor": "#20352B",
+            "outlinewidth": 1,
+            "thickness": 16,
+        }
+        if coluna_metrica
+        else None,
     )
     st.plotly_chart(
         figura_mapa,
@@ -412,7 +519,7 @@ fig_associacao = px.scatter(
         "uf": "Estado",
     },
     title="População estimada e instalações registradas",
-    color_discrete_map={"PE": "#138A58", "PB": "#E4A11B"},
+    color_discrete_map={"PE": "#009652", "PB": "#FCC017"},
 )
 fig_associacao.update_layout(
     separators=",.", margin={"l": 12, "r": 12, "t": 55, "b": 12}
