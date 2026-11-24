@@ -105,24 +105,34 @@ def publico_atendido(dados: pd.DataFrame, coluna: str) -> str:
 
 
 def figura_barra(dados: pd.DataFrame, coluna: str, titulo: str, eixo: str, casas: int = 0):
+    ordenados = dados.sort_values([coluna, "municipio"], ascending=[False, True]).copy()
+    ordenados["sede"] = ordenados["municipio"] + " · " + ordenados["uf"]
+    ordenados["valor_exibido"] = ordenados[coluna].map(lambda valor: formatar_numero(valor, casas))
     figura = px.bar(
-        dados.sort_values(coluna, ascending=False),
-        x="municipio",
-        y=coluna,
+        ordenados,
+        x=coluna,
+        y="sede",
+        orientation="h",
         color="uf",
-        hover_data={"codigo_ibge": True, "uf": True, coluna: f":,.{casas}f"},
-        labels={"municipio": "Município", "uf": "UF", coluna: eixo},
+        text="valor_exibido",
+        labels={"sede": "Município", "uf": "UF", coluna: eixo},
         title=titulo,
         color_discrete_map={"PE": "#009652", "PB": "#FCC017"},
     )
-    figura.update_layout(
-        xaxis_title=None,
-        yaxis_title=eixo,
-        legend_title_text="Estado",
-        separators=",.",
-        margin={"l": 12, "r": 12, "t": 55, "b": 48},
+    figura.update_traces(
+        texttemplate="%{text}", textposition="outside", cliponaxis=False,
+        textfont={"size": 14, "color": "#20352B"},
+        hovertemplate="%{y}<br>" + eixo + ": %{text}<extra></extra>",
     )
-    figura.update_xaxes(tickangle=-35, automargin=True, tickfont={"size": 10})
+    figura.update_yaxes(
+        categoryorder="array", categoryarray=ordenados["sede"].tolist(),
+        autorange="reversed", title=None, automargin=True, tickfont={"size": 14},
+    )
+    figura.update_xaxes(title=eixo, rangemode="tozero")
+    figura.update_layout(
+        height=max(250, 125 + 34 * len(dados)), showlegend=False, separators=",.",
+        margin={"l": 8, "r": 90, "t": 55, "b": 48},
+    )
     return figura
 
 
@@ -219,6 +229,11 @@ except (FileNotFoundError, ValueError, OSError) as erro:
 
 ufs_disponiveis = sorted(df["uf"].dropna().unique().tolist())
 
+def restaurar_recorte():
+    st.session_state["filtro_ufs"] = ufs_disponiveis
+    st.session_state["filtro_municipios"] = sorted(df["municipio"].unique())
+
+
 if "filtro_ufs" not in st.session_state:
     st.session_state["filtro_ufs"] = ufs_disponiveis
 
@@ -262,10 +277,12 @@ with st.expander("Filtrar indicadores", expanded=True):
         st.session_state["indicador_mapa"] = INDICADOR_VAZIO
     with filtros[2]:
         indicador_mapa = st.selectbox(
-            "Indicador",
+            "Indicador do mapa",
             options=opcoes_indicador,
             key="indicador_mapa",
         )
+
+    st.button("Voltar aos 12 municípios", on_click=restaurar_recorte)
 
     if indicador_mapa == INDICADOR_VAZIO:
         st.caption("Sem indicador selecionado, o mapa distingue apenas os estados.")
@@ -375,34 +392,12 @@ with st.container():
         "O mapa-base do OpenStreetMap requer conexão à internet."
     )
 
-st.subheader("Públicos e área atendida")
-status_atendimento = selecionados["atendimento_confirmado"].map(normalizar_atendimento)
-if status_atendimento.isna().any():
-    total_atendimento = "Pendente"
-else:
-    total_atendimento = (
-        f"{int(status_atendimento.sum())}/{len(selecionados)} confirmados"
-    )
-publicos = st.columns(3, gap="small", wrap=True)
-publicos[0].metric(
-    "Domicílios ocupados — Censo 2022",
-    publico_atendido(selecionados, "domicilios_ocupados_2022"),
-)
-publicos[1].metric(
-    "Estabelecimentos ativos nos CNAEs",
-    publico_atendido(selecionados, "estabelecimentos_ativos_cnae_selecionados"),
-)
-publicos[2].metric("Confirmação de atendimento", total_atendimento)
-st.warning(
-    "Os públicos residencial e empresarial são totalizados somente para municípios com atendimento "
-    "confirmado. Se houver informação ausente, o resultado aparece como pendente; campos vazios não são zero."
-)
-
 st.subheader("Irradiação global horizontal — GHI")
 visao_ghi = st.segmented_control(
     "Visualização do GHI",
     options=["Anual", "Mensal"],
     default="Anual",
+    required=True,
     key="visao_ghi",
     label_visibility="collapsed",
     width="content",
@@ -417,6 +412,21 @@ if visao_ghi == "Anual":
         ),
         width="stretch",
     )
+elif len(selecionados) > 3:
+    matriz = selecionados.sort_values("municipio").set_index("municipio")[COLUNAS_MES].copy()
+    matriz.columns = list(MESES.values())
+    fig_mensal = px.imshow(
+        matriz, aspect="auto", color_continuous_scale="YlGn",
+        labels={"x": "Mês", "y": "Sede municipal", "color": "Wh/m².dia"},
+        title="GHI médio diário por sede e mês",
+        range_color=(df[COLUNAS_MES].min().min(), df[COLUNAS_MES].max().max()),
+    )
+    fig_mensal.update_traces(
+        hovertemplate="%{y} · %{x}<br>%{z:,.0f} Wh/m².dia<extra></extra>"
+    )
+    fig_mensal.update_layout(height=210 + 29 * len(matriz), separators=",.")
+    fig_mensal.update_yaxes(automargin=True)
+    st.plotly_chart(fig_mensal, width="stretch")
 else:
     mensal = selecionados[["municipio", "uf", *COLUNAS_MES]].melt(
         id_vars=["municipio", "uf"],
@@ -451,79 +461,69 @@ st.caption(
 )
 
 st.subheader("Geração distribuída fotovoltaica registrada pela ANEEL")
-visao_aneel = st.segmented_control(
-    "Indicador ANEEL",
-    options=["Instalações", "Potência"],
-    default="Instalações",
-    key="visao_aneel",
-    label_visibility="collapsed",
-    width="content",
+controle_indicador, controle_escala = st.columns(2, wrap=True)
+with controle_indicador:
+    indicador = st.radio("Indicador ANEEL", ["Instalações", "Potência"], horizontal=True)
+with controle_escala:
+    escala = st.radio("Escala", ["Total", "Por 1.000 habitantes"], horizontal=True)
+
+metricas_aneel = {
+    ("Instalações", "Total"): ("gd_fv_instalacoes", "Instalações", 0),
+    ("Instalações", "Por 1.000 habitantes"): (
+        "gd_fv_instalacoes_por_1000_hab", "Instalações por 1.000 habitantes", 2,
+    ),
+    ("Potência", "Total"): ("gd_fv_potencia_instalada_kw", "Potência (kW)", 2),
+    ("Potência", "Por 1.000 habitantes"): (
+        "gd_fv_kw_por_1000_hab", "kW por 1.000 habitantes", 2,
+    ),
+}
+coluna, unidade, casas = metricas_aneel[indicador, escala]
+st.plotly_chart(
+    figura_barra(selecionados, coluna, f"{unidade} · ANEEL em 10/11/2026", unidade, casas),
+    width="stretch",
 )
-if visao_aneel == "Instalações":
-    st.plotly_chart(
-        figura_barra(
-            selecionados,
-            "gd_fv_instalacoes",
-            "Instalações fotovoltaicas registradas",
-            "Instalações",
-        ),
-        width="stretch",
+if escala == "Por 1.000 habitantes":
+    st.caption("Denominador: população municipal estimada pelo IBGE em 01/07/2026.")
+
+st.subheader("População e instalações fotovoltaicas")
+pares = selecionados[["populacao_estimada_2026", "gd_fv_instalacoes"]].dropna()
+n = len(selecionados)
+recorte = "Recorte completo" if n == len(df) else "Seleção filtrada"
+if n == 1:
+    cidade = selecionados.iloc[0]
+    st.write(
+        f"**{cidade['municipio']} · {cidade['uf']}** — "
+        f"{formatar_numero(cidade['populacao_estimada_2026'])} habitantes estimados e "
+        f"{formatar_numero(cidade['gd_fv_instalacoes'])} instalações registradas."
     )
+    st.caption("Selecione mais municípios para comparar população e instalações.")
 else:
-    st.plotly_chart(
-        figura_barra(
-            selecionados,
-            "gd_fv_potencia_instalada_kw",
-            "Potência fotovoltaica instalada registrada",
-            "Potência (kW)",
-            casas=2,
-        ),
-        width="stretch",
+    if len(pares) == n and pares.nunique().min() > 1:
+        r = pares["populacao_estimada_2026"].corr(pares["gd_fv_instalacoes"])
+        st.write(f"**{recorte} · {n} municípios · correlação de Pearson = {formatar_numero(r, 3)}**")
+        if n == 2:
+            st.caption("Com apenas dois pontos distintos em ambos os eixos, |r| é sempre 1.")
+    else:
+        st.caption(f"{recorte} · {n} municípios. O cálculo de Pearson exige pares completos e variação nos dois indicadores.")
+    fig_associacao = px.scatter(
+        selecionados,
+        x="populacao_estimada_2026",
+        y="gd_fv_instalacoes",
+        color="uf",
+        hover_name="municipio",
+        hover_data={"codigo_ibge": True, "gd_fv_potencia_instalada_kw": ":,.2f"},
+        labels={
+            "populacao_estimada_2026": "População estimada (habitantes)",
+            "gd_fv_instalacoes": "Instalações fotovoltaicas registradas",
+            "uf": "Estado",
+        },
+        title="População estimada e instalações registradas",
+        color_discrete_map={"PE": "#009652", "PB": "#FCC017"},
     )
-
-razoes = st.columns(2, gap="small", wrap=True)
-with razoes[0]:
-    st.plotly_chart(
-        figura_barra(
-            selecionados,
-            "gd_fv_instalacoes_por_1000_hab",
-            "Instalações por 1.000 habitantes",
-            "Instalações por 1.000 habitantes",
-            casas=2,
-        ),
-        width="stretch",
+    fig_associacao.update_layout(
+        separators=",.", margin={"l": 12, "r": 12, "t": 55, "b": 12}
     )
-with razoes[1]:
-    st.plotly_chart(
-        figura_barra(
-            selecionados,
-            "gd_fv_kw_por_1000_hab",
-            "Potência por 1.000 habitantes",
-            "kW por 1.000 habitantes",
-            casas=2,
-        ),
-        width="stretch",
-    )
-
-fig_associacao = px.scatter(
-    selecionados,
-    x="populacao_estimada_2026",
-    y="gd_fv_instalacoes",
-    color="uf",
-    hover_name="municipio",
-    hover_data={"codigo_ibge": True, "gd_fv_potencia_instalada_kw": ":,.2f"},
-    labels={
-        "populacao_estimada_2026": "População estimada (habitantes)",
-        "gd_fv_instalacoes": "Instalações fotovoltaicas registradas",
-        "uf": "Estado",
-    },
-    title="População estimada e instalações registradas",
-    color_discrete_map={"PE": "#009652", "PB": "#FCC017"},
-)
-fig_associacao.update_layout(
-    separators=",.", margin={"l": 12, "r": 12, "t": 55, "b": 12}
-)
-st.plotly_chart(fig_associacao, width="stretch")
+    st.plotly_chart(fig_associacao, width="stretch")
 st.caption(
     "Associação descritiva entre municípios; pode refletir diferenças de escala e não indica causalidade. "
     "Os indicadores por mil habitantes são razões, não percentuais de domicílios com energia solar."
@@ -537,8 +537,7 @@ st.subheader("Dados do recorte selecionado")
 colunas_tabela = [
     "uf", "codigo_ibge", "municipio", "populacao_estimada_2026",
     "ghi_annual_Wh_m2_day", "gd_fv_instalacoes", "gd_fv_potencia_instalada_kw",
-    "domicilios_ocupados_2022", "estabelecimentos_ativos_cnae_selecionados",
-    "atendimento_confirmado",
+    "gd_fv_instalacoes_por_1000_hab", "gd_fv_kw_por_1000_hab",
 ]
 tabela = selecionados[colunas_tabela].rename(
     columns={
@@ -549,17 +548,10 @@ tabela = selecionados[colunas_tabela].rename(
         "ghi_annual_Wh_m2_day": "GHI anual (Wh/m².dia)",
         "gd_fv_instalacoes": "Instalações ANEEL",
         "gd_fv_potencia_instalada_kw": "Potência ANEEL (kW)",
-        "domicilios_ocupados_2022": "Domicílios ocupados (Censo 2022)",
-        "estabelecimentos_ativos_cnae_selecionados": "Estabelecimentos ativos (CNAEs)",
-        "atendimento_confirmado": "Atendimento confirmado",
+        "gd_fv_instalacoes_por_1000_hab": "Instalações por 1.000 habitantes",
+        "gd_fv_kw_por_1000_hab": "kW por 1.000 habitantes",
     }
 ).copy()
-for coluna in [
-    "Domicílios ocupados (Censo 2022)",
-    "Estabelecimentos ativos (CNAEs)",
-    "Atendimento confirmado",
-]:
-    tabela[coluna] = tabela[coluna].where(tabela[coluna].notna(), "Pendente")
 st.dataframe(tabela, hide_index=True, width="stretch")
 
 st.subheader("Como interpretar")
@@ -570,3 +562,26 @@ st.markdown(
     "- Baixa adoção solar, isoladamente, não comprova oportunidade.\n"
     "- Uma lista para validação comercial depende da confirmação da área atendida e dos dados de público residencial e empresarial."
 )
+
+with st.expander("Limites para uso comercial"):
+    status_atendimento = selecionados["atendimento_confirmado"].map(normalizar_atendimento)
+    if status_atendimento.isna().any():
+        total_atendimento = "Pendente"
+    else:
+        total_atendimento = (
+            f"{int(status_atendimento.sum())}/{len(selecionados)} confirmados"
+        )
+    publicos = st.columns(3, gap="small", wrap=True)
+    publicos[0].metric(
+        "Domicílios ocupados — Censo 2022",
+        publico_atendido(selecionados, "domicilios_ocupados_2022"),
+    )
+    publicos[1].metric(
+        "Estabelecimentos ativos nos CNAEs",
+        publico_atendido(selecionados, "estabelecimentos_ativos_cnae_selecionados"),
+    )
+    publicos[2].metric("Confirmação de atendimento", total_atendimento)
+    st.warning(
+        "Os públicos residencial e empresarial são totalizados somente para municípios com atendimento "
+        "confirmado. Se houver informação ausente, o resultado aparece como pendente; campos vazios não são zero."
+    )
