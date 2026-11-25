@@ -2,6 +2,10 @@
 
 Projeto acadêmico da disciplina de **Análise de Dados e BI** do **UNIPÊ**, ministrada pelo professor Daniel Brandão. O estudo surgiu no contexto do contato da equipe com a Ativa Solar durante o desenvolvimento de uma landing page para a empresa.
 
+**Dashboard online:** [Acessar a aplicação interativa](https://dashboard-ativasolar.streamlit.app/)
+
+[![Abrir no Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://dashboard-ativasolar.streamlit.app/)
+
 ## Objetivo do estudo
 
 Comparar, com dados públicos, os 12 municípios do recorte de Pernambuco e Paraíba para apoiar uma triagem inicial de localidades que valha a pena investigar em futuras ações de prospecção da Ativa Solar. A análise é **exploratória**: não comprova demanda, não identifica clientes da Ativa Solar e não estima vendas ou faturamento da empresa.
@@ -77,7 +81,17 @@ Use os links abaixo para abrir cada notebook no Google Colab.
 
 ## Dashboard
 
+### Acesso online (deploy)
+
+A aplicação está disponibilizada no **Streamlit Community Cloud** e pode ser acessada diretamente pelo navegador, sem necessidade de instalação local.
+
+**Link:** [https://dashboard-ativasolar.streamlit.app/](https://dashboard-ativasolar.streamlit.app/)
+
+### Funcionalidades
+
 O MVP da dashboard está implementado em `Dashboard/app.py`, com **Python**, **pandas**, **Plotly** e **Streamlit**. Ele carrega a base integrada limpa e permite filtrar por estado e município para comparar GHI anual e mensal, instalações e potência fotovoltaica registradas pela ANEEL, razões por mil habitantes e população estimada como contexto. A dashboard também exibe como não preenchidos os campos de público residencial e empresarial e de confirmação de atendimento. Esses campos representam lacunas para possíveis ampliações comerciais, não entradas das cinco perguntas atuais; valores ausentes não são convertidos em zero.
+
+### Execução local
 
 Para executar a aplicação a partir da raiz do repositório:
 
